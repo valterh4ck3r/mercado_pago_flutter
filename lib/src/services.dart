@@ -42,10 +42,12 @@ class MercadoPago {
     
     /// if error
     if (response.statusCode != statusCode) {
-      int errorCode = int.tryParse(jsonBody["cause"][0]["code"]) ?? 404;
+//      int errorCode = int.tryParse(jsonBody["cause"][0]["code"]) ?? 404;
+
+      print(jsonBody);
 
       responseObject.isSuccessful = false;
-      responseObject.errorCode = errorCode;
+      responseObject.errorCode = 404;
       responseObject.data = jsonBody;
     }
 
@@ -88,7 +90,6 @@ class MercadoPago {
     @required int month,
     @required String card,
     @required String docNumber,
-    @required String docType,
     @required String name,
   }) async {
     final url = '$_base_url/v1/card_tokens?public_key=$_publicKey';
@@ -99,7 +100,7 @@ class MercadoPago {
       'expiration_month': month,
       'card_number': card,
       'cardholder': {
-        'identification': {'number': docNumber, 'type': docType},
+        'identification': {'number': docNumber, 'type': "CPF"},
         'name': name
       }
     };
@@ -152,6 +153,7 @@ class MercadoPago {
     @required String cardToken,
     @required String description,
     @required String paymentMethod,
+    @required int installments,
     @required String userId,
     @required String email
   }) async {
@@ -161,7 +163,7 @@ class MercadoPago {
       'transaction_amount': total,
       'token': cardToken,
       'description': description,
-      'installments': 1,
+      'installments': installments,
       'payment_method_id': paymentMethod,
       'payer': {
         'id': userId,
